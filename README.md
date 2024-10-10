@@ -4,9 +4,10 @@
 BigNum được sử dụng khi kích thước của số đang làm việc lớn hơn kích thước tối đa của các kiểu dữ liệu có sẵn của C++  
 
 # Mục lục
-- [Khai báo BigNum](#1-khai-báo-bignum)
-- [Toán tử số học](#2-các-toán-tử-số-học)
-- [Toán tử so sánh](#3-các-toán-tử-so-sánh)
+[1. Khai báo BigNum](#1-khai-báo-bignum)  
+[2. Toán tử số học](#2-các-toán-tử-số-học)  
+[3. Toán tử so sánh](#3-các-toán-tử-so-sánh)  
+[4. Các tính năng khác](#4-các-tính-năng-khác)
 
 # Những tính năng
 
