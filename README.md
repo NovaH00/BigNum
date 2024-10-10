@@ -98,14 +98,32 @@ Các phép +, -, *, / hoạt động như bình thường
     cout << a - b << endl; // 5
     cout << a * b << endl; // 50
     cout << a / b << endl; // 2
+    cout << a % b;         // 0
 ```
-- Lưu ý, đối với phép chia thì nếu mẫu số bằng 0 thì sẽ bị lỗi invalid_argument   
+- Lưu ý:
+    + Các toán tử trả về số ở dạng BigNum
+    + Các toán tử trên sẽ báo lỗi nếu hai số khi thực hiện phép tính không phải là BigNum
+    + Đối với phép chia thì nếu mẫu số bằng 0 thì sẽ bị lỗi invalid_argument   
+    + Phép chia nếu có phần thập phân thì là phép chia lấy số nguyên
+        ```c++
+        BigNum a(10);
+        BigNum b(3);
 
+        BigNum quotient = a / b;
+        cout << quotient; // 3
+        ```
+    + Đối với phép chia lấy phần dư (modulo: %): Tham khảo bảng sau
+        |  a  |  b  |  a % b  |    Giải Thích    |
+        |-----|-----|---------|------------------|
+        |  7  |  3  |    1    |    7 = 3.2 + 1   |
+        | -7  |  3  |   -1    | -7 = 3.(-2) - 1  |
+        |  7  | -3  |    1    | 7 = -3.(-2) + 1  |
+        | -7  | -3  |   -1    | -7 = -3.2  - 1   |  
 Phép phủ định
 ```c++
     BigNum a(10);
-
-    cout << -a; // -10
+    BigNum negate = -a;
+    cout << negate; // -10
 ```
 ## 3. Các toán tử so sánh
 Các toán tử so sánh hoạt động như bình thường  
@@ -120,3 +138,27 @@ Các toán tử so sánh hoạt động như bình thường
     cout << (a == b) << endl; // 0
     cout << (a != b);         // 1
 ```
+- Lưu ý:
+    + Các toán tử trên sẽ báo lỗi nếu hai số khi thực hiện so sánh không phải là BigNum  
+## 4. Các tính năng khác
+- Giá trị tuyệt đối
+    ```c++
+    BigNum a(-3);
+    BigNum abs = a.abs();
+    cout << abs; // 3
+    ```
+- Lũy thừa
+    + Lũy thừa với một BigNum có sẵn
+        ```c++
+        BigNum a(2);
+        BigNum power = a.pow(2);
+        cout << power; // 4;
+        ```
+    + Luỹ thừa chung
+        ```c++
+        BigNum base(2);
+        BigNum exponent(2);
+
+        BigNum power = BigNum::exp(base, exponent);
+        cout << power; // 4
+        ```

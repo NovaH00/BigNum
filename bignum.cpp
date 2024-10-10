@@ -1,27 +1,32 @@
 #include <algorithm>
 #include <iostream>
+#include <typeinfo>
 #include <vector>
-
 using namespace std;
 
 class BigNum {
 private:
     vector<int> digits; // Store digits in reverse order
-    bool sign;         // 0 for positive, 1 for negative
+    bool sign;          // 0 for positive, 1 for negative
+
+    template <typename T>
+    void type_check() const {
+        static_assert(std::is_same<T, BigNum>::value, "Operator cannot perform on non-BigNum types.");
+    }
+
 public:
     BigNum() : digits{0}, sign(0) {}; // Default constructor
-    BigNum(const long long &integer){
+    BigNum(const long long &integer) {
         int copy;
-        if(integer < 0){
+        if (integer < 0) {
             sign = 1;
             copy = -integer;
-        }   
-        else{
+        } else {
             sign = 0;
             copy = integer;
         }
-        while(copy > 0){
-            digits.emplace_back(copy%10);
+        while (copy > 0) {
+            digits.emplace_back(copy % 10);
             copy /= 10;
         }
     }
@@ -61,10 +66,11 @@ public:
     BigNum(const string &num_str) {
         sign = (num_str[0] == '-') ? 1 : 0;
         for (char e : num_str) {
-            if (e == '-') continue; // Skip sign character
+            if (e == '-')
+                continue; // Skip sign character
             digits.emplace_back(int(e - '0'));
         }
-        if(digits.size() == 1 && digits[0] == 0)
+        if (digits.size() == 1 && digits[0] == 0)
             sign = 0;
 
         // Reverse the input list to store digits from least to most significant
@@ -82,9 +88,50 @@ public:
         }
     }
 
+    vector<int> get_digits(){
+        return this->digits;
+    }
+    BigNum abs() const {
+        vector<int> reverse_digit = this->digits;
+        reverse(reverse_digit.begin(), reverse_digit.end());
+        BigNum result{reverse_digit, this->sign};
+        if ((result < BigNum(0)))
+            return -result;
+        else
+            return result;
+    }
+
+    BigNum pow(long long power) const {
+        if(power < 0)
+            throw invalid_argument("Cannot raise to negative power");
+        BigNum result(1);
+        vector<int> reverse_digit = this->digits;
+        reverse(reverse_digit.begin(), reverse_digit.end());
+        BigNum this_bignum{reverse_digit, this->sign};
+
+        while (power > 0) {
+            result = result * this_bignum;
+            power--;
+        }
+
+        return result;
+    }
+
+    static BigNum exp(const BigNum &base, const BigNum &exponent){
+        BigNum result(1);
+        BigNum base_bignum = base;
+        BigNum exponent_bignum = exponent;
+        while(exponent_bignum >= BigNum(1)){
+            result = result*base_bignum;
+            exponent_bignum = exponent_bignum - BigNum(1);
+        }
+        return result;
+    }
 
     // Overload the + operator
-    BigNum operator+(const BigNum &other) const {
+    template <typename T>
+    BigNum operator+(const T &other) const {
+        type_check<T>();
         if (this->sign != other.sign) {
             // If signs are different, use subtraction
             return (*this - (-other));
@@ -112,13 +159,16 @@ public:
 
         result.sign = this->sign; // Result has the same sign
 
-        if(result.digits.size() == 1 && result.digits[0] == 0)
+        if (result.digits.size() == 1 && result.digits[0] == 0)
             result.sign = 0;
         return result;
     }
 
+
     // Overload the - operator
-    BigNum operator-(const BigNum &other) const {
+    template <typename T>
+    BigNum operator-(const T &other) const {
+        type_check<T>();
         if (this->sign != other.sign) {
             // If signs are different, use addition
             return (*this + (-other));
@@ -158,13 +208,16 @@ public:
 
         result.sign = this->sign; // Result has the same sign
 
-        if(result.digits.size() == 1 && result.digits[0] == 0)
+        if (result.digits.size() == 1 && result.digits[0] == 0)
             result.sign = 0;
         return result;
     }
 
+
     // Overload the * operator
-    BigNum operator*(const BigNum &other) const {
+    template <typename T>
+    BigNum operator*(const T &other) const {
+        type_check<T>();
         BigNum result;
         const vector<int> &lhs = this->digits;
         const vector<int> &rhs = other.digits;
@@ -190,13 +243,25 @@ public:
         }
 
         result.sign = this->sign ^ other.sign; // Result is negative if signs are different
-        if(result.digits.size() == 1 && result.digits[0] == 0)
+        if (result.digits.size() == 1 && result.digits[0] == 0)
             result.sign = 0;
         return result;
     }
 
+    template <typename T>
+    BigNum operator*=(const T &other) const {
+        type_check<T>();
+        vector<int> reverse_digit = this->digits;
+        reverse(reverse_digit.begin(), reverse_digit.end());
+        BigNum this_bignum{reverse_digit, this->sign};
+
+        return this_bignum * other;
+    }
+
     // Overload the / operator
-    BigNum operator/(const BigNum &other) const {
+    template <typename T>
+    BigNum operator/(const T &other) const {
+        type_check<T>();
         if (other == BigNum{0}) {
             throw invalid_argument("Division by zero.");
         }
@@ -206,32 +271,62 @@ public:
         current.digits.clear();
         size_t size = this->digits.size();
 
+        // Get the absolute values of the current and other operands
+        BigNum abs_this = this->abs();
+        BigNum abs_other = other.abs();
+
+        // Iterate through the digits of the dividend
         for (size_t i = size; i-- > 0;) {
-            current.digits.insert(current.digits.begin(), this->digits[i]);
+            // Shift the current number left (i.e., append the next digit)
+            current.digits.insert(current.digits.begin(), abs_this.digits[i]);
+
+            // Count how many times `abs_other` can be subtracted from `current`
             int count = 0;
 
-            // Subtract `other` from `current` until it is no longer possible
-            while (current >= other) {
-                current = current - other;
+            // Check to avoid underflow (if current becomes less than abs_other)
+            while (current >= abs_other) {
+                current = current - abs_other;
                 count++;
             }
 
-            result.digits.insert(result.digits.begin(), count); // Build the result digit by digit
+            // Insert the count of how many times we could subtract at the start of result
+            result.digits.insert(result.digits.begin(), count);
         }
 
-        // Remove leading zeros
+        // Remove leading zeros from the result
         while (result.digits.size() > 1 && result.digits.back() == 0) {
             result.digits.pop_back();
         }
 
+        // Set the sign of the result
         result.sign = this->sign ^ other.sign; // Result is negative if signs are different
-        if(result.digits.size() == 1 && result.digits[0] == 0)
-            result.sign = 0;
+        if (result.digits.size() == 1 && result.digits[0] == 0) {
+            result.sign = 0; // If the result is zero, ensure the sign is not negative
+        }
+
         return result;
     }
 
+
+
+    template <typename T>
+    BigNum operator%(const T &other) const {
+        type_check<T>();
+        vector<int> reverse_digit = this->digits;
+        reverse(reverse_digit.begin(), reverse_digit.end());
+        BigNum this_bignum{reverse_digit, this->sign};
+
+        BigNum quotient = this_bignum / other;
+        BigNum remainder = this_bignum - quotient * other;
+        return remainder;
+    }
+
+
     // Overload comparison operator for less than
-    bool operator<(const BigNum &other) const {
+    template <typename T>
+    bool operator<(const T &other) const {
+        type_check<T>();
+        
         if (this->sign != other.sign) {
             return this->sign > other.sign; // Negative is less than positive
         }
@@ -247,30 +342,40 @@ public:
     }
 
     // Overload comparison operator for greater than or equal
-    bool operator>=(const BigNum &other) const {
+    template <typename T>
+    bool operator>=(const T &other) const {
+        type_check<T>();
         return !(*this < other);
     }
-    bool operator>(const BigNum &other) const {
-        if(*this < other)
+    template <typename T>
+    bool operator>(const T &other) const {
+        type_check<T>();
+        if (*this < other)
             return false;
-        if(*this == other)
+        if (*this == other)
             return false;
 
         return true;
     }
-    bool operator<=(const BigNum &other) const {
-        if(*this > other)
+    template <typename T>
+    bool operator<=(const T &other) const {
+        type_check<T>();
+        if (*this > other)
             return false;
-        
+
         return true;
     }
 
     // Overload comparison operator for equality
-    bool operator==(const BigNum &other) const {
+    template <typename T>
+    bool operator==(const T &other) const {
+        type_check<T>();
         return this->digits == other.digits && this->sign == other.sign;
     }
 
-    bool operator!=(const BigNum &other) const {
+    template <typename T>
+    bool operator!=(const T &other) const {
+        type_check<T>();
         return !(*this == other);
     }
 
@@ -278,13 +383,14 @@ public:
     BigNum operator-() const {
         BigNum result = *this;
         result.sign = !this->sign; // Flip the sign
-        if(result.digits.size() == 1 && result.digits[0] == 0)
+        if (result.digits.size() == 1 && result.digits[0] == 0)
             result.sign = 0;
         return result;
     }
 
     friend ostream &operator<<(ostream &os, const BigNum &big_num) {
-        if (big_num.sign) os << '-'; // Output sign
+        if (big_num.sign)
+            os << '-'; // Output sign
         for (auto it = big_num.digits.rbegin(); it != big_num.digits.rend(); ++it) {
             os << *it;
         }
