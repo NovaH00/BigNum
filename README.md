@@ -11,7 +11,7 @@ BigNum được sử dụng khi kích thước của số đang làm việc lớ
 # Những tính năng
 
 ## 1. Khai báo BigNum 
-BigNum có 4 cách khai báo  
+BigNum có 5 cách khai báo  
 + Cách 1, khai báo BigNum rỗng
     ```c++
     BigNum num;
