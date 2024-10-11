@@ -122,8 +122,11 @@ Các phép +, -, \*, / hoạt động như bình thường
     cout << a % b;         // 0
 ```
 
-- Lưu ý: + Các toán tử trả về số ở dạng BigNum + Các toán tử trên sẽ báo lỗi nếu hai số khi thực hiện phép tính không phải là BigNum + Đối với phép chia thì nếu mẫu số bằng 0 thì sẽ bị lỗi invalid_argument  
-   + Phép chia nếu có phần thập phân thì là phép chia lấy số nguyên
+- Lưu ý: 
+  + Các toán tử trả về số ở dạng BigNum
+  + Các toán tử trên sẽ báo lỗi nếu hai số khi thực hiện phép tính không phải là BigNum
+  + Đối với phép chia thì nếu mẫu số bằng 0 thì sẽ bị lỗi invalid_argument  
+  + Phép chia nếu có phần thập phân thì là phép chia lấy số nguyên
   ```c++
   BigNum a(10);
   BigNum b(3);
