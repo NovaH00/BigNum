@@ -128,16 +128,16 @@ Các phép +, -, \*, / hoạt động như bình thường
   BigNum a(10);
   BigNum b(3);
 
-          BigNum quotient = a / b;
-          cout << quotient; // 3
-          ```
-      + Đối với phép chia lấy phần dư (modulo: %): Tham khảo bảng sau
-          |  a  |  b  |  a % b  |    Giải Thích    |
-          |-----|-----|---------|------------------|
-          |  7  |  3  |    1    |    7 = 3.2 + 1   |
-          | -7  |  3  |   -1    | -7 = 3.(-2) - 1  |
-          |  7  | -3  |    1    | 7 = -3.(-2) + 1  |
-          | -7  | -3  |   -1    | -7 = -3.2  - 1   |
+  BigNum quotient = a / b;
+  cout << quotient; // 3
+  ```
+  + Đối với phép chia lấy phần dư (modulo: %): Tham khảo bảng sau
+      |  a  |  b  |  a % b  |    Giải Thích    |
+      |-----|-----|---------|------------------|
+      |  7  |  3  |    1    |    7 = 3.2 + 1   |
+      | -7  |  3  |   -1    | -7 = 3.(-2) - 1  |
+      |  7  | -3  |    1    | 7 = -3.(-2) + 1  |
+      | -7  | -3  |   -1    | -7 = -3.2  - 1   |
 
   Phép phủ định
 
