@@ -109,46 +109,44 @@ BigNum có 5 cách khai báo
 
 ## 2. Các toán tử số học
 
-Các phép +, -, \*, / hoạt động như bình thường
+Các phép +, -, \*, / hoạt động như bình thường  
+  ```c++
+      BigNum a(10);
+      BigNum b(5);
 
-```c++
-    BigNum a(10);
-    BigNum b(5);
-
-    cout << a + b << endl; // 15
-    cout << a - b << endl; // 5
-    cout << a * b << endl; // 50
-    cout << a / b << endl; // 2
-    cout << a % b;         // 0
-```
+      cout << a + b << endl; // 15
+      cout << a - b << endl; // 5
+      cout << a * b << endl; // 50
+      cout << a / b << endl; // 2
+      cout << a % b;         // 0
+  ```
 
 - Lưu ý: 
   + Các toán tử trả về số ở dạng BigNum
   + Các toán tử trên sẽ báo lỗi nếu hai số khi thực hiện phép tính không phải là BigNum
   + Đối với phép chia thì nếu mẫu số bằng 0 thì sẽ bị lỗi invalid_argument  
   + Phép chia nếu có phần thập phân thì là phép chia lấy số nguyên
-  ```c++
-  BigNum a(10);
-  BigNum b(3);
-
-  BigNum quotient = a / b;
-  cout << quotient; // 3
-  ```
-  + Đối với phép chia lấy phần dư (modulo: %): Tham khảo bảng sau
-      |  a  |  b  |  a % b  |    Giải Thích    |
-      |-----|-----|---------|------------------|
-      |  7  |  3  |    1    |    7 = 3.2 + 1   |
-      | -7  |  3  |   -1    | -7 = 3.(-2) - 1  |
-      |  7  | -3  |    1    | 7 = -3.(-2) + 1  |
-      | -7  | -3  |   -1    | -7 = -3.2  - 1   |
-
-  Phép phủ định
-
-```c++
+    ```c++
     BigNum a(10);
-    BigNum negate = -a;
-    cout << negate; // -10
-```
+    BigNum b(3);
+
+    BigNum quotient = a / b;
+    cout << quotient; // 3
+    ```
+  + Đối với phép chia lấy phần dư (modulo: %): Tham khảo bảng sau
+    |  a  |  b  |  a % b  |    Giải Thích    |
+    |-----|-----|---------|------------------|
+    |  7  |  3  |    1    |    7 = 3.2 + 1   |
+    | -7  |  3  |   -1    | -7 = 3.(-2) - 1  |
+    |  7  | -3  |    1    | 7 = -3.(-2) + 1  |
+    | -7  | -3  |   -1    | -7 = -3.2  - 1   |
+
+Phép phủ định
+  ```c++
+      BigNum a(10);
+      BigNum negate = -a;
+      cout << negate; // -10
+  ```
 
 ## 3. Các toán tử so sánh
 
