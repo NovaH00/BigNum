@@ -101,23 +101,11 @@ public:
             return result;
     }
 
-    BigNum pow(long long power) const {
-        if(power < 0)
-            throw invalid_argument("Cannot raise to negative power");
-        BigNum result(1);
-        vector<int> reverse_digit = this->digits;
-        reverse(reverse_digit.begin(), reverse_digit.end());
-        BigNum this_bignum{reverse_digit, this->sign};
-
-        while (power > 0) {
-            result = result * this_bignum;
-            power--;
-        }
-
-        return result;
-    }
 
     static BigNum exp(const BigNum &base, const BigNum &exponent){
+        if(exponent < BigNum(0)){
+            throw invalid_argument("Cannot raise to negative exponent");
+        }
         BigNum result(1);
         BigNum base_bignum = base;
         BigNum exponent_bignum = exponent;
@@ -263,7 +251,7 @@ public:
     BigNum operator/(const T &other) const {
         type_check<T>();
         if (other == BigNum{0}) {
-            throw invalid_argument("Division by zero.");
+            throw invalid_argument("Division by zero is not allowed.");
         }
 
         BigNum result;
