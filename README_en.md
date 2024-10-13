@@ -21,7 +21,7 @@ There are 5 ways to declare BigNum.
     ```c++
     cout << num; // 0
     ```
-- Second, use integer type.  
+- Second, use integer types.  
     ```c++
     BigNum num(12);
 
