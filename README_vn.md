@@ -173,15 +173,6 @@ Các toán tử so sánh hoạt động như bình thường
   cout << abs; // 3
   ```
 - Lũy thừa
-
-  - Lũy thừa với một BigNum có sẵn
-    ```c++
-    BigNum a(2);
-    BigNum power = a.pow(2);
-    cout << power; // 4;
-    ```
-  - Luỹ thừa chung
-
     ```c++
     BigNum base(2);
     BigNum exponent(2);
