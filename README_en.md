@@ -48,7 +48,7 @@ There are 5 ways to declare BigNum.
     ```
 
 <a id="4th-way"></a>
-- Forth, the same as the way you declare an array.  
+- Fourth, the same as the way you declare an array.  
 
     ```c++
     BigNum num = {1,2,3};
