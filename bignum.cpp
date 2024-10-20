@@ -236,15 +236,6 @@ public:
         return result;
     }
 
-    template <typename T>
-    BigNum operator*=(const T &other) const {
-        type_check<T>();
-        vector<int> reverse_digit = this->digits;
-        reverse(reverse_digit.begin(), reverse_digit.end());
-        BigNum this_bignum{reverse_digit, this->sign};
-
-        return this_bignum * other;
-    }
 
     // Overload the / operator
     template <typename T>
